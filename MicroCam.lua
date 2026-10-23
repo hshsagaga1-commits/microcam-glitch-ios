@@ -14,7 +14,7 @@ if _G.MicroGlitchCleanup then
 end
 
 local enabled = false
-local amplitude = math.rad(6)
+local amplitude = math.rad(3)
 local direction = 1
 local currentYaw = 0
 local switchInterval = 0.6 -- 6 graus a 10 graus por segundo
