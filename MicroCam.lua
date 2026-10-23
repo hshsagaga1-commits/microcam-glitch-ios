@@ -94,7 +94,7 @@ RunService:BindToRenderStep(bindName, Enum.RenderPriority.Last.Value + 100, func
         yaw = 0
     end
     local roll = 0
-    previousOffset = CFrame.Angles(0, yaw, roll)
+    previousOffset = CFrame.new() * CFrame.Angles(0, yaw, 0)
     camera.CFrame = camera.CFrame * previousOffset
 end)
 
