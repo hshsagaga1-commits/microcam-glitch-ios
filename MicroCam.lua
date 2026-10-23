@@ -14,9 +14,10 @@ if _G.MicroGlitchCleanup then
 end
 
 local enabled = false
-local amplitude = math.rad(0.7)
-local frequency = 90
+local amplitude = math.rad(0.45)
+local frequency = 120
 local phase = 0
+local lastDirection = -1
 local alive = true
 local bindName = "MicroGlitchEffect"
 local previousOffset = CFrame.identity
@@ -73,11 +74,12 @@ RunService:BindToRenderStep(bindName, Enum.RenderPriority.Last.Value + 100, func
     end
 
     if not enabled then return end
-    phase = (phase + dt * frequency * math.pi * 2) % (math.pi * 2)
+    phase = phase + dt * frequency * math.pi * 2
 
-    -- Pulso muito rapido: esquerda -> reto, sem transicao suave.
-    -- 90 ciclos/s; o movimento realmente exibido depende do FPS.
-    local yaw = (math.sin(phase) >= 0) and -amplitude or 0
+    -- Pulsos sub-grau em sequencia esquerda -> centro.
+    -- A fase avanca com dt e nao e reiniciada, mantendo o ritmo entre frames.
+    local pulse = math.sin(phase) >= 0
+    local yaw = pulse and -amplitude or 0
     local roll = 0
     previousOffset = CFrame.Angles(0, yaw, roll)
     camera.CFrame = camera.CFrame * previousOffset
