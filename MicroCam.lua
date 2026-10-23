@@ -84,17 +84,15 @@ RunService:BindToRenderStep(bindName, Enum.RenderPriority.Last.Value + 100, func
     end
 
     if not enabled then return end
-    -- Pulso unilateral: parte de um angulo grande a esquerda e volta ao centro muito rapido.
-    -- Depois de um breve instante no centro, reinicia sem varrer para a direita.
+    -- Um pulso so: desloca para a esquerda e retorna diretamente ao centro.
+    -- Nao interpola para o lado oposto; a pausa acontece apenas no centro.
     elapsed = (elapsed + dt) % (returnTime + restTime)
-    local yaw
+    local yaw = 0
     if elapsed < returnTime then
-        yaw = amplitude * (1 - elapsed / returnTime)
-    else
-        yaw = 0
+        local progress = elapsed / returnTime
+        yaw = amplitude * (1 - progress)
     end
-    local roll = 0
-    previousOffset = CFrame.new() * CFrame.Angles(0, yaw, 0)
+    previousOffset = CFrame.Angles(0, yaw, 0)
     camera.CFrame = camera.CFrame * previousOffset
 end)
 
