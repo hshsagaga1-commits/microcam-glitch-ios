@@ -34,6 +34,7 @@ button.Position = UDim2.new(0.78, 0, 0.65, 0)
 button.BackgroundColor3 = Color3.fromRGB(40, 40, 48)
 button.Text = "TRT"
 button.TextColor3 = Color3.new(1, 1, 1)
+button.TextTransparency = 1
 button.TextSize = 17
 button.Font = Enum.Font.GothamBold
 button.AutoButtonColor = true
