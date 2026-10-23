@@ -14,8 +14,9 @@ if _G.MicroGlitchCleanup then
 end
 
 local enabled = false
-local amplitude = math.rad(0.80)
-local frameDirection = -1
+local amplitude = math.rad(12)
+local sweepSpeed = 22
+local elapsed = 0
 local alive = true
 local bindName = "MicroGlitchEffect"
 local previousOffset = CFrame.identity
@@ -55,7 +56,7 @@ dot.Parent = button
 
 button.Activated:Connect(function()
     enabled = not enabled
-    frameDirection = -1
+    elapsed = 0
     button.BackgroundColor3 = enabled and Color3.fromRGB(25, 190, 105) or Color3.fromRGB(40, 40, 48)
 end)
 
@@ -82,10 +83,9 @@ RunService:BindToRenderStep(bindName, Enum.RenderPriority.Last.Value + 100, func
     end
 
     if not enabled then return end
-    -- Alterna a direcao a cada frame renderizado (esquerda, direita, esquerda...).
-    -- Mais mudancas que isso no mesmo frame nao ficam visiveis na tela.
-    frameDirection = -frameDirection
-    local yaw = frameDirection * amplitude
+    -- Movimento visual amplo e rapido, suavemente varrendo de um lado ao outro.
+    elapsed = elapsed + dt
+    local yaw = math.sin(elapsed * sweepSpeed) * amplitude
     local roll = 0
     previousOffset = CFrame.Angles(0, yaw, roll)
     camera.CFrame = camera.CFrame * previousOffset
