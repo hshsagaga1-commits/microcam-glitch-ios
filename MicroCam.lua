@@ -1,6 +1,6 @@
 -- MicroCam Glitch | Roblox Mobile
--- Botao circular ON/OFF + micro oscilacao horizontal
--- Configuracao inicial: amplitude 0.2 grau, frequencia 30 Hz.
+-- Botao circular ON/OFF + tremor horizontal perceptivel
+-- Configuracao inicial: amplitude 3 graus, frequencia 22 Hz.
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -16,8 +16,8 @@ if _G.MicroGlitchCleanup then
 end
 
 local enabled = false
-local amplitude = math.rad(0.2)
-local frequency = 30
+local amplitude = math.rad(3)
+local frequency = 22
 local phase = 0
 local previousOffset = CFrame.identity
 local alive = true
@@ -34,7 +34,7 @@ button.Name = "GlitchToggle"
 button.Size = UDim2.fromOffset(58, 58)
 button.Position = UDim2.new(0.78, 0, 0.65, 0)
 button.BackgroundColor3 = Color3.fromRGB(40, 40, 48)
-button.Text = "GL"
+button.Text = "TRT"
 button.TextColor3 = Color3.new(1, 1, 1)
 button.TextSize = 17
 button.Font = Enum.Font.GothamBold
