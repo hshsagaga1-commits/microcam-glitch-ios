@@ -15,7 +15,10 @@ end
 
 local enabled = false
 local amplitude = math.rad(1.2)
-local frequency = 24
+local startFrequency = 24
+local maxFrequency = 34
+local rampDuration = 3.0
+local enabledTime = 0
 local phase = 0
 local alive = true
 local bindName = "MicroGlitchEffect"
@@ -47,6 +50,7 @@ outline.Parent = button
 
 button.Activated:Connect(function()
     enabled = not enabled
+    enabledTime = 0
     button.BackgroundColor3 = enabled and Color3.fromRGB(25, 190, 105) or Color3.fromRGB(40, 40, 48)
 end)
 
@@ -73,10 +77,13 @@ RunService:BindToRenderStep(bindName, Enum.RenderPriority.Last.Value + 100, func
     end
 
     if not enabled then return end
+    enabledTime = enabledTime + dt
+    local ramp = math.clamp(enabledTime / rampDuration, 0, 1)
+    local frequency = startFrequency + (maxFrequency - startFrequency) * ramp
     phase = phase + dt * frequency * math.pi * 2
 
-    -- Oscilacao lateral continua e perceptivel, sincronizada pelo delta time.
-    -- 24 Hz evita tentar alternar mais rapido do que a maioria dos frames mobile consegue mostrar.
+    -- A frequencia acelera gradualmente de 24 para 34 Hz nos primeiros 3 segundos.
+    -- A amplitude fica constante para aumentar o ritmo sem exagerar o angulo.
     local yaw = math.sin(phase) * amplitude
     local roll = 0
     previousOffset = CFrame.Angles(0, yaw, roll)
