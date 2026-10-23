@@ -17,8 +17,7 @@ local enabled = false
 local amplitude = math.rad(10)
 local direction = 1
 local currentYaw = 0
-local switchInterval = 0.1 -- troca seca a cada 0,1 segundo
-local switchTimer = 0
+local switchesPerFrame = 2
 local alive = true
 local bindName = "MicroGlitchEffect"
 local previousOffset = CFrame.identity
@@ -60,7 +59,6 @@ button.Activated:Connect(function()
     enabled = not enabled
     direction = 1
     currentYaw = 0
-    switchTimer = 0
     button.BackgroundColor3 = enabled and Color3.fromRGB(25, 190, 105) or Color3.fromRGB(40, 40, 48)
 end)
 
@@ -88,10 +86,8 @@ RunService:BindToRenderStep(bindName, Enum.RenderPriority.Last.Value + 100, func
 
     if not enabled then return end
 
-    -- Mudança seca: fica num ângulo e depois salta para o outro.
-    switchTimer = switchTimer + dt
-    if switchTimer >= switchInterval then
-        switchTimer = switchTimer - switchInterval
+    -- Faz exatamente duas alternâncias por frame renderizado.
+    for _ = 1, switchesPerFrame do
         direction = -direction
         currentYaw = direction == 1 and -amplitude or 0
     end
