@@ -89,7 +89,7 @@ RunService:BindToRenderStep(bindName, Enum.RenderPriority.Last.Value + 100, func
     elapsed = (elapsed + dt) % (returnTime + restTime)
     local yaw
     if elapsed < returnTime then
-        yaw = -amplitude * (1 - elapsed / returnTime)
+        yaw = amplitude * (1 - elapsed / returnTime)
     else
         yaw = 0
     end
