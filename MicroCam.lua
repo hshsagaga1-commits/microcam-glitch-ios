@@ -14,8 +14,8 @@ if _G.MicroGlitchCleanup then
 end
 
 local enabled = false
-local amplitude = math.rad(2)
-local returnTime = 0.012
+local amplitude = math.rad(4)
+local returnTime = 0.010
 local restTime = 0.015
 local elapsed = 0
 local alive = true
