@@ -17,7 +17,8 @@ local enabled = false
 local amplitude = math.rad(6)
 local direction = 1
 local currentYaw = 0
-local transitionSpeed = math.rad(90) -- graus por segundo
+local switchInterval = 0.18 -- segundos entre cada mudança seca
+local switchTimer = 0
 local alive = true
 local bindName = "MicroGlitchEffect"
 local previousOffset = CFrame.identity
@@ -59,6 +60,7 @@ button.Activated:Connect(function()
     enabled = not enabled
     direction = 1
     currentYaw = 0
+    switchTimer = 0
     button.BackgroundColor3 = enabled and Color3.fromRGB(25, 190, 105) or Color3.fromRGB(40, 40, 48)
 end)
 
@@ -86,16 +88,12 @@ RunService:BindToRenderStep(bindName, Enum.RenderPriority.Last.Value + 100, func
 
     if not enabled then return end
 
-    -- Move suavemente entre esquerda (-6 graus) e centro (0 graus).
-    local targetYaw = direction == 1 and -amplitude or 0
-    local difference = targetYaw - currentYaw
-    local maxStep = transitionSpeed * dt
-
-    if math.abs(difference) <= maxStep then
-        currentYaw = targetYaw
+    -- Mudança seca: fica num ângulo e depois salta para o outro.
+    switchTimer = switchTimer + dt
+    if switchTimer >= switchInterval then
+        switchTimer = switchTimer - switchInterval
         direction = -direction
-    else
-        currentYaw = currentYaw + math.sign(difference) * maxStep
+        currentYaw = direction == 1 and -amplitude or 0
     end
 
     previousOffset = CFrame.Angles(0, currentYaw, 0)
