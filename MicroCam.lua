@@ -15,9 +15,7 @@ end
 
 local enabled = false
 local amplitude = math.rad(6)
-local returnTime = 0.0001
-local restTime = 0
-local elapsed = 0
+local direction = 1
 local alive = true
 local bindName = "MicroGlitchEffect"
 local previousOffset = CFrame.identity
@@ -57,7 +55,7 @@ dot.Parent = button
 
 button.Activated:Connect(function()
     enabled = not enabled
-    elapsed = 0
+    direction = 1
     button.BackgroundColor3 = enabled and Color3.fromRGB(25, 190, 105) or Color3.fromRGB(40, 40, 48)
 end)
 
@@ -84,14 +82,11 @@ RunService:BindToRenderStep(bindName, Enum.RenderPriority.Last.Value + 100, func
     end
 
     if not enabled then return end
-    -- Um pulso so: desloca para a esquerda e retorna diretamente ao centro.
-    -- Nao interpola para o lado oposto; a pausa acontece apenas no centro.
-    elapsed = (elapsed + dt) % (returnTime + restTime)
-    local yaw = 0
-    if elapsed < returnTime then
-        local progress = elapsed / returnTime
-        yaw = amplitude * (1 - progress)
-    end
+
+    -- Alterna entre esquerda (-6 graus) e centro (0 graus) a cada quadro.
+    local yaw = direction == 1 and -amplitude or 0
+    direction = -direction
+
     previousOffset = CFrame.Angles(0, yaw, 0)
     camera.CFrame = camera.CFrame * previousOffset
 end)
