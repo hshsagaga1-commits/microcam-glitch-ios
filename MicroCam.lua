@@ -1,6 +1,6 @@
 -- MicroCam Glitch | Roblox Mobile
--- Botao circular ON/OFF + tremor horizontal perceptivel
--- Configuracao inicial: amplitude 3 graus, frequencia 22 Hz.
+-- Tremor lateral perceptivel com botao circular ON/OFF.
+-- O efeito e visual; nao garante ativar bugs de velocidade.
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
@@ -10,16 +10,14 @@ if not player then return end
 
 local playerGui = player:WaitForChild("PlayerGui")
 
--- Limpa execucao anterior, se houver.
 if _G.MicroGlitchCleanup then
     pcall(_G.MicroGlitchCleanup)
 end
 
 local enabled = false
-local amplitude = math.rad(3)
+local amplitude = math.rad(5)
 local frequency = 22
 local phase = 0
-local previousOffset = CFrame.identity
 local alive = true
 local bindName = "MicroGlitchEffect"
 
@@ -56,7 +54,7 @@ button.Activated:Connect(function()
     button.BackgroundColor3 = enabled
         and Color3.fromRGB(25, 190, 105)
         or Color3.fromRGB(40, 40, 48)
-    button.Text = enabled and "ON" or "GL"
+    button.Text = enabled and "ON" or "TRT"
 end)
 
 local function cleanup()
@@ -76,20 +74,17 @@ RunService:BindToRenderStep(
     bindName,
     Enum.RenderPriority.Camera.Value + 1,
     function(dt)
+        if not enabled then return end
         local camera = workspace.CurrentCamera
         if not camera then return end
 
-        -- Remove o offset aplicado no frame anterior.
-        camera.CFrame = camera.CFrame * previousOffset:Inverse()
-        previousOffset = CFrame.identity
-
-        if not enabled then return end
-
         phase = (phase + dt * frequency * math.pi * 2) % (math.pi * 2)
         local yaw = math.sin(phase) * amplitude
+        local roll = math.sin(phase * 1.7) * math.rad(1.5)
 
-        previousOffset = CFrame.Angles(0, yaw, 0)
-        camera.CFrame = camera.CFrame * previousOffset
+        -- O controlador da camera do Roblox ja atualizou a camera neste frame.
+        -- Aplica o tremor por cima, sem tentar desfazer offsets de frames anteriores.
+        camera.CFrame = camera.CFrame * CFrame.Angles(0, yaw, roll)
     end
 )
 
