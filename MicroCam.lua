@@ -16,6 +16,8 @@ end
 local enabled = false
 local amplitude = math.rad(6)
 local direction = 1
+local currentYaw = 0
+local transitionSpeed = math.rad(90) -- graus por segundo
 local alive = true
 local bindName = "MicroGlitchEffect"
 local previousOffset = CFrame.identity
@@ -56,6 +58,7 @@ dot.Parent = button
 button.Activated:Connect(function()
     enabled = not enabled
     direction = 1
+    currentYaw = 0
     button.BackgroundColor3 = enabled and Color3.fromRGB(25, 190, 105) or Color3.fromRGB(40, 40, 48)
 end)
 
@@ -83,11 +86,19 @@ RunService:BindToRenderStep(bindName, Enum.RenderPriority.Last.Value + 100, func
 
     if not enabled then return end
 
-    -- Alterna entre esquerda (-6 graus) e centro (0 graus) a cada quadro.
-    local yaw = direction == 1 and -amplitude or 0
-    direction = -direction
+    -- Move suavemente entre esquerda (-6 graus) e centro (0 graus).
+    local targetYaw = direction == 1 and -amplitude or 0
+    local difference = targetYaw - currentYaw
+    local maxStep = transitionSpeed * dt
 
-    previousOffset = CFrame.Angles(0, yaw, 0)
+    if math.abs(difference) <= maxStep then
+        currentYaw = targetYaw
+        direction = -direction
+    else
+        currentYaw = currentYaw + math.sign(difference) * maxStep
+    end
+
+    previousOffset = CFrame.Angles(0, currentYaw, 0)
     camera.CFrame = camera.CFrame * previousOffset
 end)
 
