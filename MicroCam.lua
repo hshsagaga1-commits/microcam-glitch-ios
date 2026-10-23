@@ -15,11 +15,7 @@ end
 
 local enabled = false
 local amplitude = math.rad(0.65)
-local startFrequency = 24
-local maxFrequency = 34
-local rampDuration = 3.0
-local enabledTime = 0
-local phase = 0
+local frameDirection = -1
 local alive = true
 local bindName = "MicroGlitchEffect"
 local previousOffset = CFrame.identity
@@ -59,7 +55,7 @@ dot.Parent = button
 
 button.Activated:Connect(function()
     enabled = not enabled
-    enabledTime = 0
+    frameDirection = -1
     button.BackgroundColor3 = enabled and Color3.fromRGB(25, 190, 105) or Color3.fromRGB(40, 40, 48)
 end)
 
@@ -86,14 +82,10 @@ RunService:BindToRenderStep(bindName, Enum.RenderPriority.Last.Value + 100, func
     end
 
     if not enabled then return end
-    enabledTime = enabledTime + dt
-    local ramp = math.clamp(enabledTime / rampDuration, 0, 1)
-    local frequency = startFrequency + (maxFrequency - startFrequency) * ramp
-    phase = phase + dt * frequency * math.pi * 2
-
-    -- A frequencia acelera gradualmente de 24 para 34 Hz nos primeiros 3 segundos.
-    -- A amplitude fica constante para aumentar o ritmo sem exagerar o angulo.
-    local yaw = math.sin(phase) * amplitude
+    -- Alterna a direcao a cada frame renderizado (esquerda, direita, esquerda...).
+    -- Mais mudancas que isso no mesmo frame nao ficam visiveis na tela.
+    frameDirection = -frameDirection
+    local yaw = frameDirection * amplitude
     local roll = 0
     previousOffset = CFrame.Angles(0, yaw, roll)
     camera.CFrame = camera.CFrame * previousOffset
