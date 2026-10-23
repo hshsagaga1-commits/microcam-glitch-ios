@@ -14,8 +14,8 @@ if _G.MicroGlitchCleanup then
 end
 
 local enabled = false
-local amplitude = math.rad(4)
-local frequency = 45
+local amplitude = math.rad(1.2)
+local frequency = 60
 local phase = 0
 local alive = true
 local bindName = "MicroGlitchEffect"
@@ -81,7 +81,7 @@ RunService:BindToRenderStep(bindName, Enum.RenderPriority.Last.Value + 100, func
     phase = (phase + dt * frequency * math.pi * 2) % (math.pi * 2)
 
     local yaw = math.sin(phase) * amplitude
-    local roll = math.sin(phase * 1.7) * math.rad(1.5)
+    local roll = math.sin(phase * 1.7) * math.rad(0.4)
     previousOffset = CFrame.Angles(0, yaw, roll)
     camera.CFrame = camera.CFrame * previousOffset
 end)
