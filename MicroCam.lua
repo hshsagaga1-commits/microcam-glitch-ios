@@ -14,8 +14,8 @@ if _G.MicroGlitchCleanup then
 end
 
 local enabled = false
-local amplitude = math.rad(4)
-local frequency = 60
+local amplitude = math.rad(8)
+local frequency = 90
 local phase = 0
 local alive = true
 local bindName = "MicroGlitchEffect"
@@ -75,11 +75,9 @@ RunService:BindToRenderStep(bindName, Enum.RenderPriority.Last.Value + 100, func
     if not enabled then return end
     phase = (phase + dt * frequency * math.pi * 2) % (math.pi * 2)
 
-    -- Hard snap: direita -> esquerda -> centro, em passos secos.
-    -- 60 ciclos/s; a velocidade visivel fica limitada pelo FPS do aparelho.
-    local step = phase / (math.pi * 2)
-    local slot = math.floor(step * 3) % 3
-    local yaw = (slot == 0 and amplitude) or (slot == 1 and -amplitude) or 0
+    -- Pulso muito rapido: esquerda -> reto, sem transicao suave.
+    -- 90 ciclos/s; o movimento realmente exibido depende do FPS.
+    local yaw = (math.sin(phase) >= 0) and -amplitude or 0
     local roll = 0
     previousOffset = CFrame.Angles(0, yaw, roll)
     camera.CFrame = camera.CFrame * previousOffset
