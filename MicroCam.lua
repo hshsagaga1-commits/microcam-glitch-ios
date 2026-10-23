@@ -15,7 +15,7 @@ end
 
 local enabled = false
 local amplitude = math.rad(2)
-local returnTime = 0.033
+local returnTime = 0.012
 local restTime = 0.015
 local elapsed = 0
 local alive = true
