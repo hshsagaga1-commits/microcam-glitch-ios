@@ -14,7 +14,7 @@ if _G.MicroGlitchCleanup then
 end
 
 local enabled = false
-local amplitude = math.rad(0.65)
+local amplitude = math.rad(2.0)
 local startFrequency = 24
 local maxFrequency = 34
 local rampDuration = 3.0
@@ -93,7 +93,7 @@ RunService:BindToRenderStep(bindName, Enum.RenderPriority.Last.Value + 100, func
 
     -- A frequencia acelera gradualmente de 24 para 34 Hz nos primeiros 3 segundos.
     -- A amplitude fica constante para aumentar o ritmo sem exagerar o angulo.
-    local yaw = math.sin(phase) * amplitude
+    local yaw = (math.sin(phase) >= 0) and -amplitude or amplitude
     local roll = 0
     previousOffset = CFrame.Angles(0, yaw, roll)
     camera.CFrame = camera.CFrame * previousOffset
