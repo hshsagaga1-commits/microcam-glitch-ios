@@ -14,8 +14,9 @@ if _G.MicroGlitchCleanup then
 end
 
 local enabled = false
-local amplitude = math.rad(12)
-local sweepSpeed = 22
+local amplitude = math.rad(30)
+local returnTime = 0.035
+local restTime = 0.015
 local elapsed = 0
 local alive = true
 local bindName = "MicroGlitchEffect"
@@ -83,9 +84,15 @@ RunService:BindToRenderStep(bindName, Enum.RenderPriority.Last.Value + 100, func
     end
 
     if not enabled then return end
-    -- Movimento visual amplo e rapido, suavemente varrendo de um lado ao outro.
-    elapsed = elapsed + dt
-    local yaw = math.sin(elapsed * sweepSpeed) * amplitude
+    -- Pulso unilateral: parte de um angulo grande a esquerda e volta ao centro muito rapido.
+    -- Depois de um breve instante no centro, reinicia sem varrer para a direita.
+    elapsed = (elapsed + dt) % (returnTime + restTime)
+    local yaw
+    if elapsed < returnTime then
+        yaw = -amplitude * (1 - elapsed / returnTime)
+    else
+        yaw = 0
+    end
     local roll = 0
     previousOffset = CFrame.Angles(0, yaw, roll)
     camera.CFrame = camera.CFrame * previousOffset
