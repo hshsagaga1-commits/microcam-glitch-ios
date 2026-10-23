@@ -15,7 +15,7 @@ end
 
 local enabled = false
 local amplitude = math.rad(4)
-local frequency = 45
+local frequency = 30
 local phase = 0
 local alive = true
 local bindName = "MicroGlitchEffect"
@@ -81,8 +81,10 @@ RunService:BindToRenderStep(bindName, Enum.RenderPriority.Last.Value + 100, func
     if not enabled then return end
     phase = (phase + dt * frequency * math.pi * 2) % (math.pi * 2)
 
-    local yaw = math.sin(phase) * amplitude
-    local roll = math.sin(phase * 1.7) * math.rad(1.5)
+    -- Hard snap: puxa para a esquerda e volta reto, sem movimento suave.
+    -- 30 ciclos/s = até 60 trocas/s, limitado pelo FPS do aparelho.
+    local yaw = (math.sin(phase) >= 0) and -amplitude or 0
+    local roll = 0
     previousOffset = CFrame.Angles(0, yaw, roll)
     camera.CFrame = camera.CFrame * previousOffset
 end)
