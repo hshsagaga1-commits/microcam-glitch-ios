@@ -14,7 +14,7 @@ if _G.MicroGlitchCleanup then
 end
 
 local enabled = false
-local amplitude = math.rad(0.65)
+local amplitude = math.rad(0.80)
 local frameDirection = -1
 local alive = true
 local bindName = "MicroGlitchEffect"
