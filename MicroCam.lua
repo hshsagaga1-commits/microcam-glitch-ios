@@ -15,7 +15,7 @@ end
 
 local enabled = false
 local amplitude = math.rad(4)
-local frequency = 24
+local frequency = 45
 local phase = 0
 local alive = true
 local bindName = "MicroGlitchEffect"
