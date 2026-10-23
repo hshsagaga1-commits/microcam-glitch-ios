@@ -14,7 +14,7 @@ if _G.MicroGlitchCleanup then
 end
 
 local enabled = false
-local amplitude = math.rad(1.2)
+local amplitude = math.rad(0.2)
 local startFrequency = 24
 local maxFrequency = 34
 local rampDuration = 3.0
@@ -32,9 +32,11 @@ gui.Parent = playerGui
 
 local button = Instance.new("ImageButton")
 button.Name = "GlitchToggle"
-button.Size = UDim2.fromOffset(58, 58)
+button.Size = UDim2.fromOffset(18, 18)
 button.Position = UDim2.new(0.78, 0, 0.65, 0)
 button.BackgroundColor3 = Color3.fromRGB(40, 40, 48)
+button.BackgroundTransparency = 0.35
+button.ImageTransparency = 1
 button.AutoButtonColor = true
 button.Active = true
 button.Parent = gui
@@ -43,10 +45,17 @@ local round = Instance.new("UICorner")
 round.CornerRadius = UDim.new(1, 0)
 round.Parent = button
 
-local outline = Instance.new("UIStroke")
-outline.Color = Color3.fromRGB(125, 125, 145)
-outline.Thickness = 2
-outline.Parent = button
+-- Um unico ponto preto de 1 px; sem contorno externo.
+local dot = Instance.new("Frame")
+dot.Name = "PositionDot"
+dot.Size = UDim2.fromOffset(1, 1)
+dot.AnchorPoint = Vector2.new(0.5, 0.5)
+dot.Position = UDim2.fromScale(0.5, 0.5)
+dot.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+dot.BorderSizePixel = 0
+dot.Active = false
+dot.ZIndex = button.ZIndex + 1
+dot.Parent = button
 
 button.Activated:Connect(function()
     enabled = not enabled
