@@ -1,13 +1,12 @@
 -- MicroCam Glitch | Roblox Mobile
--- Tremor lateral perceptivel com botao circular ON/OFF.
--- O efeito e visual; nao garante ativar bugs de velocidade.
+-- Tremor lateral perceptivel; botao ON/OFF.
+-- O controlador de camera do jogo continua responsavel pelo touch.
 
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 
 local player = Players.LocalPlayer
 if not player then return end
-
 local playerGui = player:WaitForChild("PlayerGui")
 
 if _G.MicroGlitchCleanup then
@@ -15,11 +14,12 @@ if _G.MicroGlitchCleanup then
 end
 
 local enabled = false
-local amplitude = math.rad(5)
-local frequency = 22
+local amplitude = math.rad(4)
+local frequency = 24
 local phase = 0
 local alive = true
 local bindName = "MicroGlitchEffect"
+local previousOffset = CFrame.identity
 
 local gui = Instance.new("ScreenGui")
 gui.Name = "MicroGlitchUI"
@@ -51,48 +51,44 @@ outline.Parent = button
 
 button.Activated:Connect(function()
     enabled = not enabled
-    button.BackgroundColor3 = enabled
-        and Color3.fromRGB(25, 190, 105)
-        or Color3.fromRGB(40, 40, 48)
+    button.BackgroundColor3 = enabled and Color3.fromRGB(25, 190, 105) or Color3.fromRGB(40, 40, 48)
     button.Text = enabled and "ON" or "TRT"
 end)
 
 local function cleanup()
     alive = false
     enabled = false
-    pcall(function()
-        RunService:UnbindFromRenderStep(bindName)
-    end)
-    if gui.Parent then
-        gui:Destroy()
-    end
+    pcall(function() RunService:UnbindFromRenderStep(bindName) end)
+    if gui.Parent then gui:Destroy() end
 end
 
 _G.MicroGlitchCleanup = cleanup
 
-RunService:BindToRenderStep(
-    bindName,
-    Enum.RenderPriority.Camera.Value + 1,
-    function(dt)
-        if not enabled then return end
-        local camera = workspace.CurrentCamera
-        if not camera then return end
-
-        phase = (phase + dt * frequency * math.pi * 2) % (math.pi * 2)
-        local yaw = math.sin(phase) * amplitude
-        local roll = math.sin(phase * 1.7) * math.rad(1.5)
-
-        -- O controlador da camera do Roblox ja atualizou a camera neste frame.
-        -- Aplica o tremor por cima, sem tentar desfazer offsets de frames anteriores.
-        camera.CFrame = camera.CFrame * CFrame.Angles(0, yaw, roll)
+RunService:BindToRenderStep(bindName, Enum.RenderPriority.Last.Value + 100, function(dt)
+    local camera = workspace.CurrentCamera
+    if not camera then
+        previousOffset = CFrame.identity
+        return
     end
-)
+
+    -- Undo only our last frame's offset, then apply a fresh offset.
+    if previousOffset ~= CFrame.identity then
+        camera.CFrame = camera.CFrame * previousOffset:Inverse()
+        previousOffset = CFrame.identity
+    end
+
+    if not enabled then return end
+    phase = (phase + dt * frequency * math.pi * 2) % (math.pi * 2)
+
+    local yaw = math.sin(phase) * amplitude
+    local roll = math.sin(phase * 1.7) * math.rad(1.5)
+    previousOffset = CFrame.Angles(0, yaw, roll)
+    camera.CFrame = camera.CFrame * previousOffset
+end)
 
 gui.Destroying:Connect(function()
     if alive then
         alive = false
-        pcall(function()
-            RunService:UnbindFromRenderStep(bindName)
-        end)
+        pcall(function() RunService:UnbindFromRenderStep(bindName) end)
     end
 end)
