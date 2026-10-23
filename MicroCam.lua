@@ -14,7 +14,7 @@ if _G.MicroGlitchCleanup then
 end
 
 local enabled = false
-local amplitude = math.rad(8)
+local amplitude = math.rad(0.7)
 local frequency = 90
 local phase = 0
 local alive = true
