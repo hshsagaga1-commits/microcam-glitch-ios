@@ -27,16 +27,11 @@ gui.ResetOnSpawn = false
 gui.DisplayOrder = 999
 gui.Parent = playerGui
 
-local button = Instance.new("TextButton")
+local button = Instance.new("ImageButton")
 button.Name = "GlitchToggle"
 button.Size = UDim2.fromOffset(58, 58)
 button.Position = UDim2.new(0.78, 0, 0.65, 0)
 button.BackgroundColor3 = Color3.fromRGB(40, 40, 48)
-button.Text = "TRT"
-button.TextColor3 = Color3.new(1, 1, 1)
-button.TextTransparency = 1
-button.TextSize = 17
-button.Font = Enum.Font.GothamBold
 button.AutoButtonColor = true
 button.Active = true
 button.Parent = gui
@@ -53,7 +48,6 @@ outline.Parent = button
 button.Activated:Connect(function()
     enabled = not enabled
     button.BackgroundColor3 = enabled and Color3.fromRGB(25, 190, 105) or Color3.fromRGB(40, 40, 48)
-    button.Text = enabled and "ON" or "TRT"
 end)
 
 local function cleanup()
