@@ -18,7 +18,7 @@ local amplitude = math.rad(10)
 local direction = 1
 local currentYaw = 0
 local frameCounter = 0
-local framesPerSwitch = 2 -- duas trocas a cada quatro frames
+local framesPerSwitch = 3 -- duas trocas a cada seis frames
 local alive = true
 local bindName = "MicroGlitchEffect"
 local previousOffset = CFrame.identity
@@ -89,7 +89,7 @@ RunService:BindToRenderStep(bindName, Enum.RenderPriority.Last.Value + 100, func
 
     -- Alterna em dois frames separados dentro de cada ciclo de quatro frames.
     frameCounter = frameCounter + 1
-    if frameCounter >= 2 then
+    if frameCounter >= framesPerSwitch then
         frameCounter = 0
         direction = -direction
         currentYaw = direction == 1 and -amplitude or 0
